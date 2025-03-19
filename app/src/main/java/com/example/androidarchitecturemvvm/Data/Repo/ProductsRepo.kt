@@ -13,8 +13,8 @@ class ProductsRepo private constructor(
     private val remoteDataSource: RemoteDataSource,
     private val loclDataSource: LocalDataSource
 ):Repo {
-    override suspend fun deleteProduct(products: Products): Flow<Long> = flow{
-        emit(loclDataSource.deleteProduct(products).toLong())
+    override suspend fun deleteProduct(products: Products) {
+        loclDataSource.deleteProduct(products) // Deletes product without unnecessary Flow
     }
 
     companion object{

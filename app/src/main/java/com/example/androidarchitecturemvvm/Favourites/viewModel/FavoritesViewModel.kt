@@ -36,17 +36,22 @@ class FavoritesViewModel(private val repo: Repo) : ViewModel() {
     }
 
 
-    fun deleteProduct(products: Products) {
+    fun deleteProduct(product: Products) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                repo.deleteProduct(products)
-                fetchFavourites()
-                _message.value = ("Removed from favourites successfully")
+                Log.d("FavoritesViewModel", "Attempting to delete: ${product.id}")
+                repo.deleteProduct(product)
+                Log.d("FavoritesViewModel", "Deleted successfully: ${product.id}")
+
+                _favouriteProducts.value = _favouriteProducts.value.filter { it.id != product.id }
+                _message.value = "Removed from favourites successfully"
             } catch (e: Exception) {
-                _message.value = (e.message ?: "An error occurred")
+                Log.e("FavoritesViewModel", "Error deleting product: ${e.message}")
+                _message.value = e.message ?: "An error occurred"
             }
         }
     }
+
 }
 
 class FavouritesViewModelFactory(private val repo: Repo) : ViewModelProvider.Factory {
